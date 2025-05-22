@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeerConnect - Student Networking Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-gray: #f8fafc;
+            --medium-gray: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        /* Main Content */
+        .main {
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 4rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .welcome-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 25px 35px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 35px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Profile Form */
+        .profile-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .skills-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .skill-tag {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-remove {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Student Grid */
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1rem;
+            font-weight: 600;
+        }
+
+        .student-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .student-meta {
+            text-align: center;
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+        }
+
+        .student-interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .interest-tag {
+            background: var(--light-gray);
+            color: var(--medium-gray);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .connect-btn {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .connect-btn.connected {
+            background: var(--gradient-success);
+        }
+
+        .connect-btn.pending {
+            background: var(--gradient-secondary);
+        }
+
+        /* Search and Filters */
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .search-input {
+            position: relative;
+        }
+
+        .search-input i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+        }
+
+        .search-input input {
+            padding-left: 3rem;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--medium-gray);
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--gradient-success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+            
+            .search-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .students-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Button Animations */
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Profile Display */
+        .profile-display {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            text-align: center;
+            padding: 2rem;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-body {
+            background: white;
+            padding: 2rem;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .profile-section {
+            margin-bottom: 2rem;
+        }
+
+        .profile-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+                border-radius: 0 0 16px 16px;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">PeerConnect</div>
+                <ul class="nav-links" id="navLinks">
+                    <li class="nav-link active" onclick="showPage('dashboard')">
+                        <i class="fas fa-home"></i> Dashboard
+                    </li>
+                    <li class="nav-link" onclick="showPage('profile')">
+                        <i class="fas fa-user"></i> My Profile
+                    </li>
+                    <li class="nav-link" onclick="showPage('browse')">
+                        <i class="fas fa-users"></i> Browse Students
+                    </li>
+                    <li class="nav-link" onclick="showPage('connections')">
+                        <i class="fas fa-handshake"></i> Connections
+                    </li>
+                </ul>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="welcome-section">
+                    <h1 class="welcome-title">Welcome to PeerConnect</h1>
+                    <p class="welcome-subtitle">Connect with fellow students, discover shared interests, and collaborate on exciting projects</p>
+                    <button class="cta-button btn" onclick="showPage('profile')">
+                        <i class="fas fa-rocket"></i> Get Started
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalConnections">0</div>
+                        <div class="stat-label">Total Connections</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingRequests">0</div>
+                        <div class="stat-label">Pending Requests</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="sharedInterests">0</div>
+                        <div class="stat-label">Shared Interests</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="profileViews">127</div>
+                        <div class="stat-label">Profile Views</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile" class="page">
+                <div class="card profile-form" id="profileForm">
+                    <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">
+                        <i class="fas fa-user-edit"></i> Create Your Profile
+                    </h2>
+                    <form onsubmit="createProfile(event)">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" id="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">College ID</label>
+                            <input type="text" class="form-input" id="collegeId" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Year</label>
+                            <select class="form-select" id="year" required>
+                                <option value="">Select Year</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                                <option value="Graduate">Graduate</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select class="form-select" id="department" required>
+                                <option value="">Select Department</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Business">Business</option>
+                                <option value="Design">Design</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Psychology">Psychology</option>
+                                <option value="Biology">Biology</option>
+                                <option value="Physics">Physics</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skills/Interests</label>
+                            <input type="text" class="form-input" id="skillInput" placeholder="Type a skill and press Enter">
+                            <div class="skills-input" id="skillsContainer"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Project Areas</label>
+                            <textarea class="form-textarea" id="projectAreas" placeholder="What kind of projects are you interested in?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bio</label>
+                            <textarea class="form-textarea" id="bio" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        <button type="submit" class="cta-button btn" style="width: 100%;">
+                            <i class="fas fa-save"></i> Create Profile
+                        </button>
+                    </form>
+                </div>
+
+                <div class="profile-display" id="profileDisplay" style="display: none;">
+                    <!-- Profile display will be populated here -->
+                </div>
+            </div>
+
+            <!-- Browse Students Page -->
+            <div id="browse" class="page">
+                <div class="search-section">
+                    <h2 style="margin-bottom: 1.5rem; color: var(--primary-color);">
+                        <i class="fas fa-search"></i> Discover Students
+                    </h2>
+                    <div class="search-row">
+                        <div class="search-input">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="form-input" id="searchInput" placeholder="Search by name, interest, or skill...">
+                        </div>
+                        <div>
+                            <label class="form-label">Filter by Department</label>
+                            <select class="form-select" id="departmentFilter">
+                                <option value="">All Departments</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Business">Business</option>
+                                <option value="Design">Design</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Psychology">Psychology</option>
+                                <option value="Biology">Biology</option>
+                                <option value="Physics">Physics</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Filter by Year</label>
+                            <select class="form-select" id="yearFilter">
+                                <option value="">All Years</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                                <option value="Graduate">Graduate</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="students-grid" id="studentsGrid">
+                    <!-- Students will be populated here -->
+                </div>
+            </div>
+
+            <!-- Connections Page -->
+            <div id="connections" class="page">
+                <div class="card">
+                    <h2 style="margin-bottom: 2rem; color: var(--primary-color);">
+                        <i class="fas fa-handshake"></i> My Connections
+                    </h2>
+                    <div class="students-grid" id="connectionsGrid">
+                        <!-- Connections will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let students = [];
+        let connections = [];
+        let pendingRequests = [];
+        let userSkills = [];
+
+        // Mock Student Data
+        const mockStudents = [
+            {
+                id: 1,
+                name: "Alex Chen",
+                year: "3rd Year",
+                department: "Computer Science",
+                interests: ["Web Development", "AI/ML", "Open Source"],
+                bio: "Passionate about creating innovative web applications and exploring AI technologies.",
+                avatar: "AC"
+            },
+            {
+                id: 2,
+                name: "Sarah Johnson",
+                year: "2nd Year",
+                department: "Design",
+                interests: ["UI/UX", "Graphic Design", "Prototyping"],
+                bio: "Creative designer with a focus on user experience and visual storytelling.",
+                avatar: "SJ"
+            },
+            {
+                id: 3,
+                name: "Mike Rodriguez",
+                year: "4th Year",
+                department: "Engineering",
+                interests: ["Robotics", "IoT", "Hardware"],
+                bio: "Engineering student passionate about robotics and IoT solutions.",
+                avatar: "MR"
+            },
+            {
+                id: 4,
+                name: "Emily Davis",
+                year: "1st Year",
+                department: "Business",
+                interests: ["Entrepreneurship", "Marketing", "Finance"],
+                bio: "Aspiring entrepreneur with interests in startup culture and digital marketing.",
+                avatar: "ED"
+            },
+            {
+                id: 5,
+                name: "David Kim",
+                year: "3rd Year",
+                department: "Computer Science",
+                interests: ["Data Science", "Python", "Analytics"],
+                bio: "Data enthusiast working on machine learning projects and data visualization.",
+                avatar: "DK"
+            },
+            {
+                id: 6,
+                name: "Lisa Wang",
+                year: "2nd Year",
+                department: "Psychology",
+                interests: ["Research", "Statistics", "Behavioral Analysis"],
+                bio: "Psychology student interested in research methodology and human behavior.",
+                avatar: "LW"
+            }
+        ];
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', function() {
+            students = [...mockStudents];
+            loadUserData();
+            renderStudents();
+            updateStats();
+            setupEventListeners();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', filterStudents);
+            document.getElementById('departmentFilter').addEventListener('change', filterStudents);
+            document.getElementById('yearFilter').addEventListener('change', filterStudents);
+            
+            document.getElementById('skillInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addSkill();
+                }
+            });
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.closest('.nav-link').classList.add('active');
+            
+            // Update page content
+            if (pageId === 'browse') {
+                renderStudents();
+            } else if (pageId === 'connections') {
+                renderConnections();
+            }
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Profile Creation
+        function addSkill() {
+            const input = document.getElementById('skillInput');
+            const skill = input.value.trim();
+            
+            if (skill && !userSkills.includes(skill)) {
+                userSkills.push(skill);
+                renderSkills();
+                input.value = '';
+            }
+        }
+
+        function removeSkill(skill) {
+            userSkills = userSkills.filter(s => s !== skill);
+            renderSkills();
+        }
+
+        function renderSkills() {
+            const container = document.getElementById('skillsContainer');
+            container.innerHTML = userSkills.map(skill => 
+                `<div class="skill-tag">
+                    ${skill}
+                    <span class="skill-remove" onclick="removeSkill('${skill}')">×</span>
+                </div>`
+            ).join('');
+        }
+
+        function createProfile(event) {
+            event.preventDefault();
+            
+            // Validate required fields
+            const requiredFields = ['fullName', 'collegeId', 'year', 'department'];
+            for (let field of requiredFields) {
+                if (!document.getElementById(field).value.trim()) {
+                    showToast('Please fill in all required fields!');
+                    return;
+                }
+            }
+            
+            const profile = {
+                name: document.getElementById('fullName').value,
+                collegeId: document.getElementById('collegeId').value,
+                year: document.getElementById('year').value,
+                department: document.getElementById('department').value,
+                skills: [...userSkills],
+                projectAreas: document.getElementById('projectAreas').value,
+                bio: document.getElementById('bio').value,
+                avatar: document.getElementById('fullName').value.split(' ').map(n => n[0]).join('').toUpperCase()
+            };
+            
+            currentUser = profile;
+            localStorage.setItem('peerConnectUser', JSON.stringify(profile));
+            
+            displayProfile(profile);
+            updateStats();
+            showToast('Profile created successfully!');
+        }
+
+        function displayProfile(profile) {
+            document.getElementById('profileForm').style.display = 'none';
+            const display = document.getElementById('profileDisplay');
+            display.style.display = 'block';
+            
+            display.innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar-large">${profile.avatar}</div>
+                    <h2>${profile.name}</h2>
+                    <p>${profile.year} • ${profile.department}</p>
+                    <p>ID: ${profile.collegeId}</p>
+                </div>
+                <div class="profile-body">
+                    <div class="profile-section">
+                        <h3><i class="fas fa-user"></i> About Me</h3>
+                        <p>${profile.bio || 'No bio provided yet.'}</p>
+                    </div>
+                    <div class="profile-section">
+                        <h3><i class="fas fa-lightbulb"></i> Skills & Interests</h3>
+                        <div class="student-interests">
+                            ${profile.skills.map(skill => `<span class="interest-tag">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="profile-section">
+                        <h3><i class="fas fa-project-diagram"></i> Project Areas</h3>
+                        <p>${profile.projectAreas || 'No project areas specified.'}</p>
+                    </div>
+                    <button class="cta-button btn" onclick="editProfile()" style="margin-top: 2rem;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            `;
+        }
+
+        function editProfile() {
+            document.getElementById('profileForm').style.display = 'block';
+            document.getElementById('profileDisplay').style.display = 'none';
+            
+            if (currentUser) {
+                // Populate form with existing data
+                document.getElementById('fullName').value = currentUser.name || '';
+                document.getElementById('collegeId').value = currentUser.collegeId || '';
+                document.getElementById('year').value = currentUser.year || '';
+                document.getElementById('department').value = currentUser.department || '';
+                document.getElementById('projectAreas').value = currentUser.projectAreas || '';
+                document.getElementById('bio').value = currentUser.bio || '';
+                userSkills = currentUser.skills || [];
+                renderSkills();
+            }
+        }
+
+        // Student Rendering
+        function renderStudents() {
+            const grid = document.getElementById('studentsGrid');
+            const filteredStudents = getFilteredStudents();
+            
+            if (filteredStudents.length === 0) {
+                grid.innerHTML = `
+                    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <i class="fas fa-users" style="font-size: 3rem; color: var(--medium-gray); margin-bottom: 1rem;"></i>
+                        <h3>No students found</h3>
+                        <p>Try adjusting your search filters.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = filteredStudents.map(student => {
+                const isConnected = connections.includes(student.id);
+                const isPending = pendingRequests.includes(student.id);
+                
+                let buttonClass = 'connect-btn';
+                let buttonText = '<i class="fas fa-plus"></i> Connect';
+                
+                if (isConnected) {
+                    buttonClass += ' connected';
+                    buttonText = '<i class="fas fa-check"></i> Connected';
+                } else if (isPending) {
+                    buttonClass += ' pending';
+                    buttonText = '<i class="fas fa-clock"></i> Pending';
+                }
+                
+                return `
+                    <div class="student-card">
+                        <div class="student-avatar">${student.avatar}</div>
+                        <div class="student-info">
+                            <h3>${student.name}</h3>
+                            <div class="student-meta">
+                                ${student.year} • ${student.department}
+                            </div>
+                            <div class="student-interests">
+                                ${student.interests.map(interest => 
+                                    `<span class="interest-tag">${interest}</span>`
+                                ).join('')}
+                            </div>
+                            <p style="color: var(--medium-gray); font-size: 0.9rem; margin-bottom: 1rem;">
+                                ${student.bio}
+                            </p>
+                            <button class="${buttonClass}" onclick="connectWithStudent(${student.id})" 
+                                    ${isConnected || isPending ? 'disabled' : ''}>
+                                ${buttonText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getFilteredStudents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const departmentFilter = document.getElementById('departmentFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            
+            return students.filter(student => {
+                const matchesSearch = !searchTerm || 
+                    student.name.toLowerCase().includes(searchTerm) ||
+                    student.interests.some(interest => 
+                        interest.toLowerCase().includes(searchTerm)
+                    );
+                
+                const matchesDepartment = !departmentFilter || 
+                    student.department === departmentFilter;
+                
+                const matchesYear = !yearFilter || 
+                    student.year === yearFilter;
+                
+                return matchesSearch && matchesDepartment && matchesYear;
+            });
+        }
+
+        function filterStudents() {
+            renderStudents();
+        }
+
+        // Connection Management
+        function connectWithStudent(studentId) {
+            if (!pendingRequests.includes(studentId) && !connections.includes(studentId)) {
+                pendingRequests.push(studentId);
+                localStorage.setItem('peerConnectPending', JSON.stringify(pendingRequests));
+                
+                // Simulate auto-acceptance after 2 seconds
+                setTimeout(() => {
+                    acceptConnection(studentId);
+                }, 2000);
+                
+                renderStudents();
+                updateStats();
+                showToast('Connection request sent!');
+            }
+        }
+
+        function acceptConnection(studentId) {
+            const index = pendingRequests.indexOf(studentId);
+            if (index > -1) {
+                pendingRequests.splice(index, 1);
+                connections.push(studentId);
+                
+                localStorage.setItem('peerConnectPending', JSON.stringify(pendingRequests));
+                localStorage.setItem('peerConnectConnections', JSON.stringify(connections));
+                
+                renderStudents();
+                updateStats();
+                showToast('Connection accepted! 🎉');
+            }
+        }
+
+        function renderConnections() {
+            const grid = document.getElementById('connectionsGrid');
+            const connectedStudents = students.filter(student => 
+                connections.includes(student.id)
+            );
+            
+            if (connectedStudents.length === 0) {
+                grid.innerHTML = `
+                    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <i class="fas fa-handshake" style="font-size: 3rem; color: var(--medium-gray); margin-bottom: 1rem;"></i>
+                        <h3>No connections yet</h3>
+                        <p>Start connecting with other students to build your network!</p>
+                        <button class="cta-button btn" onclick="showPage('browse')" style="margin-top: 1rem;">
+                            <i class="fas fa-search"></i> Browse Students
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = connectedStudents.map(student => `
+                <div class="student-card">
+                    <div class="student-avatar">${student.avatar}</div>
+                    <div class="student-info">
+                        <h3>${student.name}</h3>
+                        <div class="student-meta">
+                            ${student.year} • ${student.department}
+                        </div>
+                        <div class="student-interests">
+                            ${student.interests.map(interest => 
+                                `<span class="interest-tag">${interest}</span>`
+                            ).join('')}
+                        </div>
+                        <p style="color: var(--medium-gray); font-size: 0.9rem; margin-bottom: 1rem;">
+                            ${student.bio}
+                        </p>
+                        <button class="connect-btn connected" disabled>
+                            <i class="fas fa-check"></i> Connected
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Statistics
+        function updateStats() {
+            document.getElementById('totalConnections').textContent = connections.length;
+            document.getElementById('pendingRequests').textContent = pendingRequests.length;
+            
+            // Calculate shared interests
+            let sharedInterests = 0;
+            if (currentUser && currentUser.skills) {
+                const connectedStudents = students.filter(student => 
+                    connections.includes(student.id)
+                );
+                
+                connectedStudents.forEach(student => {
+                    const commonInterests = student.interests.filter(interest =>
+                        currentUser.skills.some(skill => 
+                            skill.toLowerCase().includes(interest.toLowerCase()) ||
+                            interest.toLowerCase().includes(skill.toLowerCase())
+                        )
+                    );
+                    sharedInterests += commonInterests.length;
+                });
+            }
+            
+            document.getElementById('sharedInterests').textContent = sharedInterests;
+        }
+
+        // Data Persistence
+        function loadUserData() {
+            const savedUser = localStorage.getItem('peerConnectUser');
+            const savedConnections = localStorage.getItem('peerConnectConnections');
+            const savedPending = localStorage.getItem('peerConnectPending');
+            
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                userSkills = currentUser.skills || [];
+                displayProfile(currentUser);
+            }
+            
+            if (savedConnections) {
+                connections = JSON.parse(savedConnections);
+            }
+            
+            if (savedPending) {
+                pendingRequests = JSON.parse(savedPending);
+            }
+        }
+
+        // Toast Notifications
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add some sample connections for demo purposes
+        setTimeout(() => {
+            if (connections.length === 0) {
+                connections = [1, 3]; // Connect with Alex Chen and Mike Rodriguez
+                localStorage.setItem('peerConnectConnections', JSON.stringify(connections));
+                updateStats();
+            }
+        }, 1000);
+
+        // Enhanced interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling
+            document.documentElement.style.scrollBehavior = 'smooth';
+            
+            // Add intersection observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all cards for animations
+            setTimeout(() => {
+                document.querySelectorAll('.card, .student-card, .stat-card').forEach(card => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    observer.observe(card);
+                });
+            }, 100);
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Close mobile menu if open
+                document.getElementById('navLinks').classList.remove('active');
+            }
+        });
+
+        // Add dynamic background effects
+        function addBackgroundEffects() {
+            const body = document.body;
+            setInterval(() => {
+                const hue = Math.floor(Math.random() * 60) + 200; // Blue to purple range
+                body.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 60%) 0%, hsl(${hue + 40}, 65%, 55%) 100%)`;
+            }, 10000);
+        }
+
+        // Initialize background effects
+        setTimeout(addBackgroundEffects, 5000);
+    </script>
+</body>
+</html>
