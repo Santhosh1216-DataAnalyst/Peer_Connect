@@ -1,2 +1,3 @@
 # Peer_Connect
 This Peer_Connect website is to used to connect and collaborate with college students. To create profile, give connection request, and to collaborate with other fellow students...
+This is the entry level website project made with simple ui
